@@ -135,23 +135,58 @@ function showTelevisores(){
     });
 }
 
+function turnActive(id){
+    let activeButton = document.querySelector('.active');
+            if (activeButton) {
+                activeButton.classList.remove('active');
+            }
+    document.getElementById(id). className = "boton-menu boton-categoria active";
+}
+
+const carrito = [];
+
+function productoACarrito(idProducto) {
+    let productoSeleccionado = productos.find(producto => producto.id == idProducto); 
+    if (productoSeleccionado) {
+        let productoEnCarrito = carrito.find(producto => producto.id == idProducto);
+        if (!productoEnCarrito) {
+            carrito.push({ ...productoSeleccionado, cantidad: 1 });
+        } else {
+            productoEnCarrito.cantidad++;
+        }
+        actualizarNCarrito();
+    } else {
+        console.error("El producto no existe");
+    }
+}
+
+
+function actualizarNCarrito() {
+    let totalProductos = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
+    carritoN.textContent = totalProductos;
+}
+
 let todos = document.querySelector("#todos")
 todos.addEventListener("click", () => {
     showTodos()
+    turnActive('todos')
 })
 
 let todosMoviles = document.querySelector("#moviles")
 todosMoviles.addEventListener("click", () => {
     showMoviles()
+    turnActive('moviles')
 })
 
 let todosPortatiles = document.querySelector("#portatiles")
 todosPortatiles.addEventListener("click", () => {
     showPortatiles()
+    turnActive('portatiles')
 })
 
 let todosTelevisores = document.querySelector("#televisiones")
 todosTelevisores.addEventListener("click", () => {
     showTelevisores()
+    turnActive('televisiones')
 })
 ;
