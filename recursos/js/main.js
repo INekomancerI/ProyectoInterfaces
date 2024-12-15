@@ -1,5 +1,10 @@
 const container = document.getElementById("product-container");
 
+// Fetch the productos.json file
+let response = await fetch('./js/productos.json');
+// Parse the JSON response
+let productos = await response.json();
+
 function clear(containerId) {
     let container = document.getElementById(containerId);
     if (container) {
@@ -13,11 +18,6 @@ function clear(containerId) {
 
 async function displayAllProducts() {
     try {
-        // Fetch the productos.json file
-        let response = await fetch('./js/productos.json');
-        // Parse the JSON response
-        let productos = await response.json();
-
         // Clear the container before adding new content
         container.innerHTML = '';
 
@@ -52,6 +52,11 @@ async function displayAllProducts() {
             addButton.classList.add('producto-agregar');
             addButton.textContent = 'Agregar';
 
+            let productID = producto.id
+            addButton.addEventListener('click', function() {
+                productoACarrito(productID);
+            });
+
             // Append all elements to the productDetailsDiv
             productDetailsDiv.appendChild(productTitle);
             productDetailsDiv.appendChild(productPrice);
@@ -72,11 +77,6 @@ async function displayAllProducts() {
 
 async function displayProductsByCategory(categoriaId) {
     try {
-        // Fetch the productos.json file
-        let response = await fetch('./js/productos.json');
-        // Parse the JSON response
-        let productos = await response.json();
-
         // Clear the container before adding new content
         container.innerHTML = '';
 
@@ -116,7 +116,7 @@ async function displayProductsByCategory(categoriaId) {
             
             let productID = producto.id
             addButton.addEventListener('click', function() {
-                productoACarrito(idProducto);
+                productoACarrito(productID);
             });
 
             // Append all elements to the productDetailsDiv
@@ -137,8 +137,6 @@ async function displayProductsByCategory(categoriaId) {
     }
 }
 
-
-
 function turnActive(id){
     let activeButton = document.querySelector('.active');
             if (activeButton) {
@@ -150,9 +148,9 @@ function turnActive(id){
 const carrito = [];
 
 function productoACarrito(idProducto) {
-    let productoSeleccionado = producto.find(producto => producto.id == idProducto); 
+    const productoSeleccionado = productos.find(producto => producto.id === idProducto);
     if (productoSeleccionado) {
-        let productoEnCarrito = carrito.find(producto => producto.id == idProducto);
+        const productoEnCarrito = carrito.find(producto => producto.id === idProducto);
         if (!productoEnCarrito) {
             carrito.push({ ...productoSeleccionado, cantidad: 1 });
         } else {
@@ -165,9 +163,29 @@ function productoACarrito(idProducto) {
 }
 
 function actualizarNCarrito() {
-    let totalProductos = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
-    carritoN.textContent = totalProductos;
+    const numerito = document.getElementById("numerito");
+    numerito.textContent = carrito.length;
 }
+
+const menu = document.querySelector(".aside-visible")
+
+function menuHandle() {
+    if(menu.style.display == "flex"){
+        menu.style.display = "none"
+    } else{
+        menu.style.display = "flex"
+    }
+}
+
+const open = document.querySelector("#open-menu");
+open.addEventListener("click", () => {
+    menuHandle()
+})
+
+const close = document.querySelector("#close-menu")
+close.addEventListener("click", () => {
+    menuHandle()
+})
 
 displayAllProducts()
 
@@ -193,10 +211,4 @@ let todosTelevisores = document.querySelector("#televisiones")
 todosTelevisores.addEventListener("click", () => {
     displayProductsByCategory('televisiones')
     turnActive('televisiones')
-})
-
-let BotonesAgregar = document.querySelectorAll(".producto-agregar")
-BotonesAgregar.addEventListener("click", () =>{
-    productoACarrito()
-})
-;
+});
