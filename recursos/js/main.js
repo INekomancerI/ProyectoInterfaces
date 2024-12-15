@@ -1,56 +1,8 @@
-const products = [
-    { title: "Portatil 01"  , price: "$1000", imgSrc: "./img/portatiles/01.jpg" },
-    { title: "Portatil 02"  , price: "$1200", imgSrc: "./img/portatiles/02.jpg" },
-    { title: "Portatil 03"  , price: "$1500", imgSrc: "./img/portatiles/03.jpg" },
-    { title: "Portatil 04"  , price: "$1800", imgSrc: "./img/portatiles/04.jpg" },
-    { title: "Portatil 05"  , price: "$2200", imgSrc: "./img/portatiles/05.jpg" },
-    { title: "Portatil 06"  , price: "$2600", imgSrc: "./img/portatiles/06.jpg" },
-    { title: "Portatil 07"  , price: "$3000", imgSrc: "./img/portatiles/07.jpg" },
-    { title: "Portatil 08"  , price: "$3500", imgSrc: "./img/portatiles/08.jpg" },
-    { title: "Movil 01"     , price: "$500" , imgSrc: "./img/moviles/01.jpg"},
-    { title: "Movil 02"     , price: "$600" , imgSrc: "./img/moviles/02.jpg"},
-    { title: "Movil 03"     , price: "$800" , imgSrc: "./img/moviles/03.jpg"},
-    { title: "Movil 04"     , price: "$1100" , imgSrc: "./img/moviles/04.jpg"},
-    { title: "Movil 05"     , price: "$1500" , imgSrc: "./img/moviles/05.jpg"},
-    { title: "Televisor 01" , price: "$1300" , imgSrc: "./img/televisiones/01.jpg"},
-    { title: "Televisor 02" , price: "$1700" , imgSrc: "./img/televisiones/02.jpg"},
-    { title: "Televisor 03" , price: "$2200" , imgSrc: "./img/televisiones/03.jpg"},
-    { title: "Televisor 04" , price: "$2800" , imgSrc: "./img/televisiones/04.jpg"},
-    { title: "Televisor 05" , price: "$3500" , imgSrc: "./img/televisiones/05.jpg"}
-];
-
-const portatiles = [
-    { title: "Portatil 01"  , price: "$1000", imgSrc: "./img/portatiles/01.jpg" },
-    { title: "Portatil 02"  , price: "$1200", imgSrc: "./img/portatiles/02.jpg" },
-    { title: "Portatil 03"  , price: "$1500", imgSrc: "./img/portatiles/03.jpg" },
-    { title: "Portatil 04"  , price: "$1800", imgSrc: "./img/portatiles/04.jpg" },
-    { title: "Portatil 05"  , price: "$2200", imgSrc: "./img/portatiles/05.jpg" },
-    { title: "Portatil 06"  , price: "$2600", imgSrc: "./img/portatiles/06.jpg" },
-    { title: "Portatil 07"  , price: "$3000", imgSrc: "./img/portatiles/07.jpg" },
-    { title: "Portatil 08"  , price: "$3500", imgSrc: "./img/portatiles/08.jpg" },
-]
-
-const moviles = [
-    { title: "Movil 01"     , price: "$500" , imgSrc: "./img/moviles/01.jpg"},
-    { title: "Movil 02"     , price: "$600" , imgSrc: "./img/moviles/02.jpg"},
-    { title: "Movil 03"     , price: "$800" , imgSrc: "./img/moviles/03.jpg"},
-    { title: "Movil 04"     , price: "$1100" , imgSrc: "./img/moviles/04.jpg"},
-    { title: "Movil 05"     , price: "$1500" , imgSrc: "./img/moviles/05.jpg"},
-]
-
-const televisiones = [
-    { title: "Televisor 01" , price: "$1300" , imgSrc: "./img/televisiones/01.jpg"},
-    { title: "Televisor 02" , price: "$1700" , imgSrc: "./img/televisiones/02.jpg"},
-    { title: "Televisor 03" , price: "$2200" , imgSrc: "./img/televisiones/03.jpg"},
-    { title: "Televisor 04" , price: "$2800" , imgSrc: "./img/televisiones/04.jpg"},
-    { title: "Televisor 05" , price: "$3500" , imgSrc: "./img/televisiones/05.jpg"}
-]
-
 const container = document.getElementById("product-container");
 
 function clear(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) { // Check if container exists
+    let container = document.getElementById(containerId);
+    if (container) {
         while (container.firstChild) {
             container.removeChild(container.firstChild);
         }
@@ -59,81 +11,133 @@ function clear(containerId) {
     }
 }
 
-function showTodos(){
-    clear("product-container")
-    products.forEach(product => {
-        const productDiv = document.createElement("div");
-        productDiv.classList.add("producto");
-    
-        productDiv.innerHTML = `
-            <img class="producto-imagen" src="${product.imgSrc}" alt="Imagen producto">
-            <div class="producto-detalles">
-                <h3 class="producto-titulo">${product.title}</h3>
-                <p class="producto-precio">${product.price}</p>
-                <button class="producto-agregar">Agregar</button>
-            </div>
-        `;
-    
-        container.appendChild(productDiv);
-    });
+async function displayAllProducts() {
+    try {
+        // Fetch the productos.json file
+        let response = await fetch('./js/productos.json');
+        // Parse the JSON response
+        let productos = await response.json();
+
+        // Clear the container before adding new content
+        container.innerHTML = '';
+
+        // Loop through all products and create the divs
+        productos.forEach(producto => {
+            // Create the main div for the product
+            let productDiv = document.createElement('div');
+            productDiv.classList.add('producto');
+
+            // Create the img element for the product image
+            let productImage = document.createElement('img');
+            productImage.classList.add('producto-imagen');
+            productImage.src = producto.imagen;
+            productImage.alt = `Imagen de ${producto.titulo}`;
+
+            // Create the details div for the product title, price, and button
+            let productDetailsDiv = document.createElement('div');
+            productDetailsDiv.classList.add('producto-detalles');
+
+            // Create the h3 element for the product title
+            let productTitle = document.createElement('h3');
+            productTitle.classList.add('producto-titulo');
+            productTitle.textContent = producto.titulo;
+
+            // Create the p element for the product price
+            let productPrice = document.createElement('p');
+            productPrice.classList.add('producto-precio');
+            productPrice.textContent = `$${producto.precio}`;
+
+            // Create the button to add the product
+            let addButton = document.createElement('button');
+            addButton.classList.add('producto-agregar');
+            addButton.textContent = 'Agregar';
+
+            // Append all elements to the productDetailsDiv
+            productDetailsDiv.appendChild(productTitle);
+            productDetailsDiv.appendChild(productPrice);
+            productDetailsDiv.appendChild(addButton);
+
+            // Append the product image and details to the main product div
+            productDiv.appendChild(productImage);
+            productDiv.appendChild(productDetailsDiv);
+
+            // Finally, append the productDiv to the container
+            container.appendChild(productDiv);
+        });
+
+    } catch (error) {
+        console.error("Error loading or processing the products:", error);
+    }
 }
 
-function showMoviles(){
-    clear("product-container")
-    moviles.forEach(product => {
-        const productDiv = document.createElement("div");
-        productDiv.classList.add("producto");
-    
-        productDiv.innerHTML = `
-            <img class="producto-imagen" src="${product.imgSrc}" alt="Imagen producto">
-            <div class="producto-detalles">
-                <h3 class="producto-titulo">${product.title}</h3>
-                <p class="producto-precio">${product.price}</p>
-                <button class="producto-agregar">Agregar</button>
-            </div>
-        `;
-    
-        container.appendChild(productDiv);
-    });
+async function displayProductsByCategory(categoriaId) {
+    try {
+        // Fetch the productos.json file
+        let response = await fetch('./js/productos.json');
+        // Parse the JSON response
+        let productos = await response.json();
+
+        // Clear the container before adding new content
+        container.innerHTML = '';
+
+        // Filter products by category
+        let filteredProducts = productos.filter(producto => producto.categoria.id === categoriaId);
+
+        // Loop through the filtered products and create the divs
+        filteredProducts.forEach(producto => {
+            // Create the main div for the product
+            let productDiv = document.createElement('div');
+            productDiv.classList.add('producto');
+
+            // Create the img element for the product image
+            let productImage = document.createElement('img');
+            productImage.classList.add('producto-imagen');
+            productImage.src = producto.imagen;
+            productImage.alt = `Imagen de ${producto.titulo}`;
+
+            // Create the details div for the product title, price, and button
+            let productDetailsDiv = document.createElement('div');
+            productDetailsDiv.classList.add('producto-detalles');
+
+            // Create the h3 element for the product title
+            let productTitle = document.createElement('h3');
+            productTitle.classList.add('producto-titulo');
+            productTitle.textContent = producto.titulo;
+
+            // Create the p element for the product price
+            let productPrice = document.createElement('p');
+            productPrice.classList.add('producto-precio');
+            productPrice.textContent = `$${producto.precio}`;
+
+            // Create the button to add the product
+            let addButton = document.createElement('button');
+            addButton.classList.add('producto-agregar');
+            addButton.textContent = 'Agregar';
+            
+            let productID = producto.id
+            addButton.addEventListener('click', function() {
+                productoACarrito(idProducto);
+            });
+
+            // Append all elements to the productDetailsDiv
+            productDetailsDiv.appendChild(productTitle);
+            productDetailsDiv.appendChild(productPrice);
+            productDetailsDiv.appendChild(addButton);
+
+            // Append the product image and details to the main product div
+            productDiv.appendChild(productImage);
+            productDiv.appendChild(productDetailsDiv);
+
+            // Append the productDiv to the container
+            container.appendChild(productDiv);
+        });
+
+    } catch (error) {
+        console.error("Error loading or processing the products:", error);
+    }
 }
 
-function showPortatiles(){
-    clear("product-container")
-    portatiles.forEach(product => {
-        const productDiv = document.createElement("div");
-        productDiv.classList.add("producto");
-    
-        productDiv.innerHTML = `
-            <img class="producto-imagen" src="${product.imgSrc}" alt="Imagen producto">
-            <div class="producto-detalles">
-                <h3 class="producto-titulo">${product.title}</h3>
-                <p class="producto-precio">${product.price}</p>
-                <button class="producto-agregar">Agregar</button>
-            </div>
-        `;
-    
-        container.appendChild(productDiv);
-    });
-}
 
-function showTelevisores(){
-    clear("product-container")
-    televisiones.forEach(product => {
-        const productDiv = document.createElement("div");
-        productDiv.classList.add("producto");
-    
-        productDiv.innerHTML = `
-            <img class="producto-imagen" src="${product.imgSrc}" alt="Imagen producto">
-            <div class="producto-detalles">
-                <h3 class="producto-titulo">${product.title}</h3>
-                <p class="producto-precio">${product.price}</p>
-                <button class="producto-agregar">Agregar</button>
-            </div>
-        `;
-    
-        container.appendChild(productDiv);
-    });
-}
 
 function turnActive(id){
     let activeButton = document.querySelector('.active');
@@ -146,7 +150,7 @@ function turnActive(id){
 const carrito = [];
 
 function productoACarrito(idProducto) {
-    let productoSeleccionado = productos.find(producto => producto.id == idProducto); 
+    let productoSeleccionado = producto.find(producto => producto.id == idProducto); 
     if (productoSeleccionado) {
         let productoEnCarrito = carrito.find(producto => producto.id == idProducto);
         if (!productoEnCarrito) {
@@ -160,33 +164,39 @@ function productoACarrito(idProducto) {
     }
 }
 
-
 function actualizarNCarrito() {
     let totalProductos = carrito.reduce((acc, producto) => acc + producto.cantidad, 0);
     carritoN.textContent = totalProductos;
 }
 
+displayAllProducts()
+
 let todos = document.querySelector("#todos")
 todos.addEventListener("click", () => {
-    showTodos()
+    displayAllProducts()
     turnActive('todos')
 })
 
 let todosMoviles = document.querySelector("#moviles")
 todosMoviles.addEventListener("click", () => {
-    showMoviles()
+    displayProductsByCategory('moviles')
     turnActive('moviles')
 })
 
 let todosPortatiles = document.querySelector("#portatiles")
 todosPortatiles.addEventListener("click", () => {
-    showPortatiles()
+    displayProductsByCategory('portatiles')
     turnActive('portatiles')
 })
 
 let todosTelevisores = document.querySelector("#televisiones")
 todosTelevisores.addEventListener("click", () => {
-    showTelevisores()
+    displayProductsByCategory('televisiones')
     turnActive('televisiones')
+})
+
+let BotonesAgregar = document.querySelectorAll(".producto-agregar")
+BotonesAgregar.addEventListener("click", () =>{
+    productoACarrito()
 })
 ;
